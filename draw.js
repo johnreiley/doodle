@@ -33,16 +33,16 @@
     );
   }
 
+  // handle clear
   clearEl.onclick = function() { 
     canvas.clear();
     saveState(); 
   };
 
+  // handle history and undo
   let saveState = () => {
     stateHistory.push(JSON.stringify(canvas));
   }
-  // canvas.on('mouse:up', saveState);
-  // document.querySelector('#c').ontouchend = saveState;
   canvas.on('path:created', saveState);
   undoEl.onclick = () => {
     if (stateHistory.length > 0) {
@@ -57,6 +57,7 @@
     }
   }
 
+  // set listeners for the size options
   drawSizes.forEach((option) => {
     option.onchange = updateDrawSize;
   })
