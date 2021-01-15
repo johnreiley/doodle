@@ -11,8 +11,9 @@
       drawingColorEl = $('drawing-color'),
       drawingLineWidthEl = $('drawing-line-width'),
       clearEl = $('clear-canvas'),
-      undoEl = $('undo-stroke'), // look more into this
+      undoEl = $('undo-stroke'),
       drawSizes = Array.from(document.querySelectorAll('input[name="draw-size"]'))
+      stateHistory = []
 
   let updateDrawSize = () => {
     canvas.freeDrawingBrush.width = parseInt(getDrawSize(), 10) || 1;
@@ -32,7 +33,27 @@
     );
   }
 
-  clearEl.onclick = function() { canvas.clear() };
+  clearEl.onclick = function() { 
+    canvas.clear();
+    saveState(); 
+  };
+
+  let saveState = () => {
+    stateHistory.push(JSON.stringify(canvas));
+  }
+  canvas.on('mouse:up', saveState);
+  undoEl.onclick = () => {
+    if (stateHistory.length > 0) {
+      stateHistory.pop();
+      let previousState = stateHistory[stateHistory.length - 1];
+      if (previousState == null) {
+        previousState = {};
+      }
+      canvas.loadFromJSON(previousState, () => {
+        canvas.renderAll();
+      })
+    }
+  }
 
   drawSizes.forEach((option) => {
     option.onchange = updateDrawSize;
