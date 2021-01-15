@@ -41,7 +41,9 @@
   let saveState = () => {
     stateHistory.push(JSON.stringify(canvas));
   }
-  canvas.on('mouse:up', saveState);
+  // canvas.on('mouse:up', saveState);
+  // document.querySelector('#c').ontouchend = saveState;
+  canvas.on('path:created', saveState);
   undoEl.onclick = () => {
     if (stateHistory.length > 0) {
       stateHistory.pop();
